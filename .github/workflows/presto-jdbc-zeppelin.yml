@@ -1,0 +1,44 @@
+name: Build presto-jdbc for Zeppelin
+
+on:
+  push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      GH_TOKEN: ${{ secrets.GH_TOKEN }}
+      PRESTO_VERSION: 320
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Config git
+      run: |
+        git config --global user.name  "CI/CD - archongum"
+        git config --global user.email "qq349074225@live.com"
+
+    - name: Patch presto-jdbc for Zeppelin
+      run: |
+        git clone --branch ${PRESTO_VERSION} --depth 1 https://github.com/prestosql/presto
+        cd ./presto
+        # apply zeppelin patch
+        curl -O https://raw.githubusercontent.com/archongum/url/presto-jdbc/zeppelin_patch/presto-jdbc_zeppelin_fix.diff
+        git apply presto-jdbc_zeppelin_fix.diff
+        # build presto-jdbc
+        ./mvnw -pl 'presto-jdbc' clean install -TC2 -q -DskipTests -Dmaven.javadoc.skip=true -Dmaven.source.skip=true -Dair.check.skip-all=true
+
+    - name: Upload presto-jdbc-zeppelin
+      env:
+        BRANCH_NAME: presto-jdbc/zeppelin_jar
+      run: |
+        git clone https://archongum:${GH_TOKEN}@github.com/archongum/url
+        cd ./url
+        # If branch exists in remote then fetch files without commit logs, 
+        # otherwise create a new empty branch
+        (git fetch origin ${BRANCH_NAME} && git checkout ${BRANCH_NAME} && git update-ref -d HEAD) || (git checkout --orphan ${BRANCH_NAME} && rm -rf *)
+        mv ../presto/presto-jdbc/target/presto-jdbc-${PRESTO_VERSION}.jar ./presto-jdbc-${PRESTO_VERSION}-zeppelin.jar
+        git add .
+        git commit -m "$(echo "CI/CD - archongum Push at "$(date +"%Y-%m-%dT%H:%M:%SZ%z"))"
+        git push -u origin ${BRANCH_NAME} -f
