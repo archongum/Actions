@@ -9,6 +9,7 @@ jobs:
     runs-on: ubuntu-latest
 
     env:
+      TZ: Asia/Shanghai
       GH_TOKEN: ${{ secrets.GH_TOKEN }}
       PRESTO_VERSION: 320
     
