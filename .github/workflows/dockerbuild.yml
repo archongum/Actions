@@ -1,0 +1,23 @@
+name: Build presto-jdbc for Zeppelin
+
+on:
+  push
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    env:
+      TZ: Asia/Shanghai
+      DOCKER_USER: dockergum
+      DOCKER_PASS: ${{ secrets.DOCKER_PASS }}
+      IMAGE_NAME: dockergum/kudu:1.11.1
+    
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: |
+        docker build . --file Dockerfile --tag $IMAGE_NAME
+        echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin
+        docker push $IMAGE_NAME
