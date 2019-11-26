@@ -1,6 +1,7 @@
 FROM ubuntu:14.04
 
-RUN apt -y update \
+RUN apt -y update && apt -y install software-properties-common \
+&&  add-apt-repository ppa:openjdk-r/ppa && apt -y update \
 &&  apt -y install autoconf automake curl flex g++ gcc gdb git \
     krb5-admin-server krb5-kdc krb5-user libkrb5-dev libsasl2-dev libsasl2-modules \
     libsasl2-modules-gssapi-mit libssl-dev libtool lsb-release make ntp \
