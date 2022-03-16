@@ -34,6 +34,7 @@ jobs:
       run: |
         # maven build
         mvn clean install \
+        -pl shaded/hadoop/ \
         -pl underfs/hdfs/ \
         -Dmaven.javadoc.skip=true \
         -DskipTests \
