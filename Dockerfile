@@ -1,3 +1,5 @@
 FROM alpine
 
-COPY ./ /alluxio
+WORKDIR /alluxio
+
+COPY ./lib /alluxio/lib
