@@ -27,3 +27,4 @@ RUN set -eux; \
   echo 'alias ll="ls -lh --color=yes"' >> /etc/profile
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
+CMD ["bash"]
