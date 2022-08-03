@@ -20,8 +20,7 @@ RUN set -eux; \
 
 
 # Use Aliyun Source
-RUN set -eux; \
-  cat > /etc/apt/sources.list <<EOF
+RUN <<EOF cat > /etc/apt/sources.list
 deb https://mirrors.aliyun.com/debian/ bullseye           main
 deb https://mirrors.aliyun.com/debian/ bullseye-updates   main
 deb https://mirrors.aliyun.com/debian/ bullseye-security  main
