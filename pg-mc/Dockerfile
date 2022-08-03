@@ -30,6 +30,7 @@ deb https://mirrors.aliyun.com/debian/ bullseye-security  main\
 # Addition
 RUN set -eux; \
 	apt-get update; \
-  echo 'alias ll="ls -lh --color=yes"' >> /etc/profile
+  echo 'alias ll="ls -lh --color=yes"' >> /etc/profile; \
+  source /etc/profile
 
 ENTRYPOINT ["/bin/bash"]
