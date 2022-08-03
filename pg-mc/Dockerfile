@@ -1,6 +1,7 @@
 FROM bitnami/postgresql:14-debian-11
 
 USER root
+WORKDIR /root
 
 # base tools
 RUN set -eux; \
@@ -30,6 +31,6 @@ deb https://mirrors.aliyun.com/debian/ bullseye-security  main\
 # Addition
 RUN set -eux; \
 	apt-get update; \
-  alias ll="ls -lh --color='yes'"
+  echo 'alias ll="ls -lh --color=yes"' >> /root/.bashrc
 
 ENTRYPOINT ["/bin/bash"]
