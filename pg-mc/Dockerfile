@@ -25,7 +25,7 @@ deb https://mirrors.aliyun.com/debian/ bullseye           main\n\
 deb https://mirrors.aliyun.com/debian/ bullseye-updates   main\n\
 deb https://mirrors.aliyun.com/debian/ bullseye-security  main\
 '\
->> /etc/apt/sources.list
+> /etc/apt/sources.list
 
 # Addition
 RUN set -eux; \
