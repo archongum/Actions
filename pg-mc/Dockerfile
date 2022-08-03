@@ -32,5 +32,4 @@ RUN set -eux; \
 	apt-get update; \
   echo 'alias ll="ls -lh --color=yes"' >> /etc/profile
 
-ENTRYPOINT ["/bin/bash"]
-CMD ["-l"]
+ENTRYPOINT ["/bin/bash", "-l", "-c"]
