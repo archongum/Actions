@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
       - name: Push to Aliyun Registry
         env:
-          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/pg-devtools:mc
+          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/devtools:pg-mc
         run: |
           # show size
           du -sh ./*
