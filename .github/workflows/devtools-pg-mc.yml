@@ -24,7 +24,7 @@ jobs:
           # show size
           du -sh ./*
           # build
-          docker build -f pg-mc/Dockerfile --tag $IMAGE_NAME .
+          docker build -f Dockerfile --tag $IMAGE_NAME .
           # show images
           docker images | head -n 10
           # push
