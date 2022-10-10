@@ -3,7 +3,7 @@ FROM bitnami/postgresql:14-debian-11
 USER root
 
 # env
-ENV TZ=Asia/Kolkata
+ENV TZ=Asia/Shanghai
 
 # base tools
 RUN set -eux; \
