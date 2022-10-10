@@ -13,6 +13,7 @@ RUN set -eux; \
 		htop \
 		telnet \
 		iputils-ping \
+		curl \
 	; \
 	apt-get purge -y --auto-remove; rm -rf /var/lib/apt/lists/*
 
