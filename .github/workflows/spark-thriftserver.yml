@@ -19,7 +19,7 @@ jobs:
           password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
       - name: Push to Aliyun Registry
         env:
-          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/spark-thriftserver:3.1.3
+          IMAGE_NAME: registry.cn-guangzhou.aliyuncs.com/archongum/spark-thriftserver:3.1.3-hadoop2.7
         run: |
           # show size
           du -sh ./*
