@@ -1,6 +1,9 @@
 FROM debian:bullseye
 
 # -------------------------- Common --------------------------
+# settings
+SHELL ["/bin/bash", "-c"]
+
 # env
 ENV TZ=Asia/Shanghai
 
