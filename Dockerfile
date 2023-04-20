@@ -16,7 +16,7 @@ ARG PG_MAJOR=14
 ARG PGVECTOR_BRAND=v0.4.1
 
 RUN apt-get update && \
-		apt-get install -y --no-install-recommends build-essential git postgresql-server-dev-$PG_MAJOR && \
+		apt-get install -y --no-install-recommends build-essential git ca-certificates postgresql-server-dev-$PG_MAJOR && \
     cd /tmp && \
     git clone --branch ${PGVECTOR_BRAND} https://github.com/pgvector/pgvector.git && \
 		cd pgvector && \
@@ -26,7 +26,7 @@ RUN apt-get update && \
 		mkdir /usr/share/doc/pgvector && \
 		cp LICENSE README.md /usr/share/doc/pgvector && \
 		rm -r /tmp/pgvector && \
-		apt-get remove -y build-essential git postgresql-server-dev-$PG_MAJOR && \
+		apt-get remove -y build-essential git ca-certificates postgresql-server-dev-$PG_MAJOR && \
 		apt-get autoremove -y && \
 		rm -rf /var/lib/apt/lists/*
 
