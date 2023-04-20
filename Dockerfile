@@ -15,7 +15,7 @@ FROM postgres:14
 ARG PG_MAJOR=14
 ARG PGVECTOR_BRAND=v0.4.1
 
-RUN apt-get update \
+RUN apt-get update && \
 		apt-get install -y --no-install-recommends build-essential postgresql-server-dev-$PG_MAJOR && \
     cd /tmp && \
     git clone --branch ${PGVECTOR_BRAND} https://github.com/pgvector/pgvector.git && \
