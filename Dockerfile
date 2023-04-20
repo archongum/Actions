@@ -1,6 +1,5 @@
 # pgvector
 # FROM postgres:14 as pgvector-builder
-ARG PGVECTOR_BRAND=v0.4.1
 # RUN apt-get update \
 #     # clickhouse_fdw build
 #     && apt-get install -y --no-install-recommends openssl ca-certificates libssl-dev postgresql-server-dev-14 libcurl4-openssl-dev automake make gcc cmake autoconf pkg-config libtool uuid-dev git build-essential \
@@ -12,6 +11,8 @@ ARG PGVECTOR_BRAND=v0.4.1
 
 # postgres
 FROM postgres:14
+
+ARG PGVECTOR_BRAND=v0.4.1
 
 RUN apt-get update \
     # clickhouse_fdw build
