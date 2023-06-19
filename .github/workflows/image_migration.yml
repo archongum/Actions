@@ -1,0 +1,47 @@
+name: CI - Docker
+
+on: ["push"]
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        image:
+        # https://hub.docker.com/r/dtzar/helm-kubectl
+        - {
+            src: dtzar/helm-kubectl:3.12,
+            dst: registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor/helm-kubectl-3.12
+          }
+        - {
+            src: dtzar/helm-kubectl:latest,
+            dst: registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor/helm-kubectl-latest
+          }
+        # others
+    runs-on: ubuntu-latest
+    env:
+      TZ: Asia/Shanghai
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Login to Aliyun Registry
+        uses: docker/login-action@v2
+        with:
+          registry: registry.cn-guangzhou.aliyuncs.com
+          username: ${{ secrets.ALIYUN_REGISTRY_USERNAME }}
+          password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
+      - name: Push to Aliyun Registry
+        run: |
+          # logging
+          set -x
+          ls -lha ./
+          du -sh ./*
+          df -h
+          echo "hostname [$(hostname)], ip [$(ip -br a)]" || true
+          # Pull
+          docker pull {{ matrix.image.src }}
+          # Do logging
+          docker images | head -n 10
+          docker history {{ matrix.image.src }}
+          # Push
+          docker tag  {{ matrix.image.src }} {{ matrix.image.dst }}
+          docker push {{ matrix.image.dst }}
