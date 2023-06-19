@@ -1,12 +1,17 @@
 name: CI - Docker
 
-on: ["push"]
+on:
+  push:
+  workflow_dispatch:
+  schedule:
+  - cron: "0 4 * * *"
 
 jobs:
   build:
     strategy:
       matrix:
         image:
+        # Including: helm, kubectl cli
         # https://hub.docker.com/r/dtzar/helm-kubectl
         - {
             src: "dtzar/helm-kubectl:3.12",
@@ -15,6 +20,46 @@ jobs:
         - {
             src: "dtzar/helm-kubectl:latest",
             dst: "registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor:helm-kubectl-latest"
+          }
+        # Including: docker, java cli
+        # https://registry.hub.docker.com/r/egorpk/docker-jdk17
+        - {
+            src: "egorpk/docker-jdk17:latest",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor:docker-jdk17"
+          }
+        # Python migration
+        # https://hub.docker.com/_/python
+        - {
+            src: "python:3.10",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/python:3.10"
+          }
+        - {
+            src: "python:3.11",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/python:3.11"
+          }
+        - {
+            src: "python:latest",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/python:latest"
+          }
+        # OpenJDK migration
+        # https://hub.docker.com/_/eclipse-temurin
+        - {
+            src: "eclipse-temurin:11",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/eclipse-temurin:11"
+          }
+        - {
+            src: "eclipse-temurin:17",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/eclipse-temurin:17"
+          }
+        # zulu-openjdk migration
+        # https://hub.docker.com/r/azul/zulu-openjdk
+        - {
+            src: "azul/zulu-openjdk:11",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/zulu-openjdk:11"
+          }
+        - {
+            src: "azul/zulu-openjdk:17",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/zulu-openjdk:17"
           }
         # others
     runs-on: ubuntu-latest
