@@ -9,12 +9,12 @@ jobs:
         image:
         # https://hub.docker.com/r/dtzar/helm-kubectl
         - {
-            src: dtzar/helm-kubectl:3.12,
-            dst: registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor/helm-kubectl-3.12
+            src: "dtzar/helm-kubectl:3.12",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor:helm-kubectl-3.12"
           }
         - {
-            src: dtzar/helm-kubectl:latest,
-            dst: registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor/helm-kubectl-latest
+            src: "dtzar/helm-kubectl:latest",
+            dst: "registry.cn-guangzhou.aliyuncs.com/archongum/ci-executor:helm-kubectl-latest"
           }
         # others
     runs-on: ubuntu-latest
@@ -34,14 +34,14 @@ jobs:
           # logging
           set -x
           ls -lha ./
-          du -sh ./*
+          du -sh ./
           df -h
           echo "hostname [$(hostname)], ip [$(ip -br a)]" || true
           # Pull
-          docker pull {{ matrix.image.src }}
+          docker pull ${{ matrix.image.src }}
           # Do logging
           docker images | head -n 10
-          docker history {{ matrix.image.src }}
+          docker history ${{ matrix.image.src }}
           # Push
-          docker tag  {{ matrix.image.src }} {{ matrix.image.dst }}
-          docker push {{ matrix.image.dst }}
+          docker tag  ${{ matrix.image.src }} ${{ matrix.image.dst }}
+          docker push ${{ matrix.image.dst }}
