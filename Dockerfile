@@ -57,8 +57,8 @@ RUN set -eux \
   # specific user
   && useradd spark \
   # download
-  && if [[ "${HADOOP_VERSION}" == "2" && "${SPARK_VERSION:2:1}" != "3" ]] ; then export HADOOP_VERSION=2.7 ; fi \
-  && if [[ "${HADOOP_VERSION}" == "3" && "${SPARK_VERSION:2:1}" != "3" ]] ; then export HADOOP_VERSION=3.2 ; fi \
+  && if [[ "${HADOOP_VERSION}" == "2" && ( "${SPARK_VERSION:2:1}" == "1" || "${SPARK_VERSION:2:1}" == "2" ) ]] ; then export HADOOP_VERSION=2.7 ; fi \
+  && if [[ "${HADOOP_VERSION}" == "3" && ( "${SPARK_VERSION:2:1}" == "1" || "${SPARK_VERSION:2:1}" == "2" ) ]] ; then export HADOOP_VERSION=3.2 ; fi \
   && echo "Use HADOOP_VERSION=${HADOOP_VERSION}" \
   && curl -kfSL https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz -o /tmp/spark.tgz \
   # untar

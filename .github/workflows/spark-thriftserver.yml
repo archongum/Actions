@@ -6,8 +6,11 @@ jobs:
   build:
     strategy:
       matrix:
-        spark: [3.1.3, 3.2.3, 3.3.2]
+        spark: [3.1.3, 3.2.4, 3.3.2]
         hadoop: [2, 3]
+        include:
+        - spark: 3.4.1
+          hadoop: 3
     runs-on: ubuntu-latest
     env:
       TZ: Asia/Shanghai
