@@ -90,8 +90,8 @@ RUN printf '%s\n' > /entrypoint.sh \
     'spark-internal' \
     && chmod +x /entrypoint.sh
 
-# non-root
-USER spark
+# (WIP)non-root
+#USER spark
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["--help"]
