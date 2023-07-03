@@ -76,26 +76,24 @@ RUN set -eux \
   && rm -rf /tmp/* /var/tmp/*
 
 ## add jars, like mysql-jdbc, udf, etc.
-RUN <<EOF
-  set -eux
-  spark_extjars_url=(
+RUN set -eux \
+  && spark_extjars_url=( \
       # S3
-      https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/${HADOOP_AWS}/hadoop-aws-${HADOOP_AWS}.jar
-      https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk/1.12.500/aws-java-sdk-1.12.500.jar
+      https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/${HADOOP_AWS}/hadoop-aws-${HADOOP_AWS}.jar \
+      https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk/1.12.500/aws-java-sdk-1.12.500.jar \
       # Iceberg Extension
-      https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12/1.3.0/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12-1.3.0.jar
+      https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12/1.3.0/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12-1.3.0.jar \
       # MySQL Datasource
-      https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar
+      https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar \
       # ES Datasource
-      https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-spark-20_2.12/7.17.9/elasticsearch-spark-20_2.12-7.17.9.jar
+      https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-spark-20_2.12/7.17.9/elasticsearch-spark-20_2.12-7.17.9.jar \
       # MongoDB Datasource, Spark Connector 3.x for Data Source not 10.x that for Structured Streaming, ref: https://www.mongodb.com/blog/post/new-mongodb-spark-connector
-      https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_2.12/3.0.2/mongo-spark-connector_2.12-3.0.2-assembly.jar
-  )
-  for file_url in "${spark_extjars_url[@]}"; do
-      echo "Download file [$file_url]"
-      curl -kfSL --create-dirs --output-dir ${SPARK_EXTJARS} -O "$file_url"
+      https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_2.12/3.0.2/mongo-spark-connector_2.12-3.0.2-assembly.jar \
+  ) \
+  && for file_url in "${spark_extjars_url[@]}"; do \
+      echo "Download file [$file_url]" ; \
+      curl -kfSL --create-dirs --output-dir ${SPARK_EXTJARS} -O "$file_url" ; \
   done
-EOF
 
 ## entrypoint.sh
 RUN printf '%s\n' > /entrypoint.sh \
