@@ -58,10 +58,6 @@ RUN set -eux \
   # specific user
   && useradd spark \
   # version switch
-  ## hadoop-aws
-  && if [[ "${HADOOP_VERSION}" == "2" ]] ; then export export HADOOP_AWS=2.7.7 ; fi \
-  && if [[ "${HADOOP_VERSION}" == "3" ]] ; then export export HADOOP_AWS=3.3.6 ; fi \
-  ## spark-hadoop
   && if [[ "${HADOOP_VERSION}" == "2" && ( "${SPARK_VERSION:2:1}" == "1" || "${SPARK_VERSION:2:1}" == "2" ) ]] ; then export HADOOP_VERSION=2.7 ; fi \
   && if [[ "${HADOOP_VERSION}" == "3" && ( "${SPARK_VERSION:2:1}" == "1" || "${SPARK_VERSION:2:1}" == "2" ) ]] ; then export HADOOP_VERSION=3.2 ; fi \
   && echo "Use HADOOP_VERSION=${HADOOP_VERSION}" \
@@ -77,6 +73,9 @@ RUN set -eux \
 
 ## add jars, like mysql-jdbc, udf, etc.
 RUN set -eux \
+  # version switch
+  && if [[ "${HADOOP_VERSION}" == "2" ]] ; then export export HADOOP_AWS=2.7.7 ; fi \
+  && if [[ "${HADOOP_VERSION}" == "3" ]] ; then export export HADOOP_AWS=3.3.6 ; fi \
   && spark_extjars_url=( \
       # S3
       https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/${HADOOP_AWS}/hadoop-aws-${HADOOP_AWS}.jar \
