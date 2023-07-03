@@ -49,6 +49,7 @@ ARG HADOOP_VERSION
 ENV SPARK_VERSION=${SPARK_VERSION}
 ENV SPARK_HOME="/opt/spark-${SPARK_VERSION}"
 ENV SPARK_CONF_DIR="/etc/spark"
+ENV SPARK_EXTJARS="${SPARK_HOME}/extjars"
 ENV PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
 WORKDIR ${SPARK_HOME}
 
@@ -56,7 +57,11 @@ WORKDIR ${SPARK_HOME}
 RUN set -eux \
   # specific user
   && useradd spark \
-  # download
+  # version switch
+  ## hadoop-aws
+  && if [[ "${HADOOP_VERSION}" == "2" ]] ; then export export HADOOP_AWS=2.7.7 ; fi \
+  && if [[ "${HADOOP_VERSION}" == "3" ]] ; then export export HADOOP_AWS=3.3.6 ; fi \
+  ## spark-hadoop
   && if [[ "${HADOOP_VERSION}" == "2" && ( "${SPARK_VERSION:2:1}" == "1" || "${SPARK_VERSION:2:1}" == "2" ) ]] ; then export HADOOP_VERSION=2.7 ; fi \
   && if [[ "${HADOOP_VERSION}" == "3" && ( "${SPARK_VERSION:2:1}" == "1" || "${SPARK_VERSION:2:1}" == "2" ) ]] ; then export HADOOP_VERSION=3.2 ; fi \
   && echo "Use HADOOP_VERSION=${HADOOP_VERSION}" \
@@ -71,13 +76,26 @@ RUN set -eux \
   && rm -rf /tmp/* /var/tmp/*
 
 ## add jars, like mysql-jdbc, udf, etc.
-RUN set -eux \
-  # MySQL
-  && curl -kfSL https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar --create-dirs -o ${SPARK_HOME}/extjars/mysql-connector-java-5.1.48.jar \
-  # Elasticsearch 7.17
-  && curl -kfSL https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-spark-20_2.12/7.17.9/elasticsearch-spark-20_2.12-7.17.9.jar --create-dirs -o ${SPARK_HOME}/extjars/elasticsearch-spark-20_2.12-7.17.9.jar \
-  # MongoDB Spark Connector 3.x for Data Source not 10.x that for Structured Streaming, ref: https://www.mongodb.com/blog/post/new-mongodb-spark-connector
-  && curl -kfSL https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_2.12/3.0.2/mongo-spark-connector_2.12-3.0.2-assembly.jar --create-dirs -o ${SPARK_HOME}/extjars/mongo-spark-connector_2.12-3.0.2-assembly.jar
+RUN <<EOF
+  set -eux
+  spark_extjars_url=(
+      # S3
+      https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/${HADOOP_AWS}/hadoop-aws-${HADOOP_AWS}.jar
+      https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk/1.12.500/aws-java-sdk-1.12.500.jar
+      # Iceberg Extension
+      https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12/1.3.0/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12-1.3.0.jar
+      # MySQL Datasource
+      https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar
+      # ES Datasource
+      https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-spark-20_2.12/7.17.9/elasticsearch-spark-20_2.12-7.17.9.jar
+      # MongoDB Datasource, Spark Connector 3.x for Data Source not 10.x that for Structured Streaming, ref: https://www.mongodb.com/blog/post/new-mongodb-spark-connector
+      https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_2.12/3.0.2/mongo-spark-connector_2.12-3.0.2-assembly.jar
+  )
+  for file_url in "${spark_extjars_url[@]}"; do
+      echo "Download file [$file_url]"
+      curl -kfSL --create-dirs --output-dir ${SPARK_EXTJARS} -O "$file_url"
+  done
+EOF
 
 ## entrypoint.sh
 RUN printf '%s\n' > /entrypoint.sh \
