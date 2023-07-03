@@ -74,12 +74,18 @@ RUN set -eux \
 ## add jars, like mysql-jdbc, udf, etc.
 RUN set -eux \
   # version switch
-  && if [[ "${HADOOP_VERSION}" == "2" ]] ; then export export HADOOP_AWS=2.7.7 ; fi \
-  && if [[ "${HADOOP_VERSION}" == "3" ]] ; then export export HADOOP_AWS=3.3.6 ; fi \
+  ## - Version 2.x doesn't test
+  ## - Version 3.3.5+ raise NoSuchMethodError. Ref: https://stackoverflow.com/questions/76014842/pyspark-read-iceberg-table-via-hive-metastore-onto-s3
+  ## - Version 3.3.4 need aws-java-sdk-dynamodb
+  && if [[ "${HADOOP_VERSION}" == "2" ]] ; then export export HADOOP_JAR_VERSION=2.7.7 ; fi \
+  && if [[ "${HADOOP_VERSION}" == "3" ]] ; then export export HADOOP_JAR_VERSION=3.3.4 ; fi \
   && spark_extjars_url=( \
       # S3
-      https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/${HADOOP_AWS}/hadoop-aws-${HADOOP_AWS}.jar \
-      https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk/1.12.500/aws-java-sdk-1.12.500.jar \
+      https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-common/${HADOOP_JAR_VERSION}/hadoop-common-${HADOOP_JAR_VERSION}.jar \
+      https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/${HADOOP_JAR_VERSION}/hadoop-aws-${HADOOP_JAR_VERSION}.jar \
+      https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-core/1.12.500/aws-java-sdk-core-1.12.500.jar \
+      https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-s3/1.12.500/aws-java-sdk-s3-1.12.500.jar \
+      https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-dynamodb/1.12.500/aws-java-sdk-dynamodb-1.12.500.jar \
       # Iceberg Extension
       https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12/1.3.0/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12-1.3.0.jar \
       # MySQL Datasource
