@@ -68,6 +68,8 @@ RUN set -eux \
   # conf
   && mv ${SPARK_HOME}/conf ${SPARK_CONF_DIR} \
   && ln -s ${SPARK_CONF_DIR} ${SPARK_HOME}/conf \
+  # non-root
+  && chown -R spark ${SPARK_HOME} \
   # cleanup
   && rm -rf /tmp/* /var/tmp/*
 
@@ -100,7 +102,9 @@ RUN set -eux \
   && for file_url in "${spark_extjars_url[@]}"; do \
       echo "Download file [$file_url]" ; \
       curl -kfSL --create-dirs --output-dir ${SPARK_EXTJARS} -O "$file_url" ; \
-  done
+  done \
+  # non-root
+  && chown -R spark ${SPARK_EXTJARS}
 
 ## entrypoint.sh
 RUN printf '%s\n' > /entrypoint.sh \
@@ -113,8 +117,8 @@ RUN printf '%s\n' > /entrypoint.sh \
     'spark-internal' \
     && chmod +x /entrypoint.sh
 
-# (WIP)non-root
-#USER spark
+# non-root
+USER spark
 
 ENTRYPOINT ["/entrypoint.sh"]
 CMD ["--help"]
