@@ -88,6 +88,8 @@ RUN set -eux \
       https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-dynamodb/1.12.500/aws-java-sdk-dynamodb-1.12.500.jar \
       # Iceberg Extension
       https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12/1.3.0/iceberg-spark-runtime-${SPARK_VERSION:0:3}_2.12-1.3.0.jar \
+      # Nessie Extension
+      https://repo1.maven.org/maven2/org/projectnessie/nessie-integrations/nessie-spark-extensions-${SPARK_VERSION:0:3}_2.12/0.64.0/nessie-spark-extensions-${SPARK_VERSION:0:3}_2.12-0.64.0.jar \
       # MySQL Datasource
       https://repo1.maven.org/maven2/mysql/mysql-connector-java/5.1.48/mysql-connector-java-5.1.48.jar \
       # ES Datasource
