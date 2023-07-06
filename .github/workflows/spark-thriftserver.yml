@@ -6,8 +6,8 @@ jobs:
   build:
     strategy:
       matrix:
-        spark: [3.2.4, 3.3.2]
-        hadoop: [2, 3]
+        spark: [3.2.4, 3.3.0, 3.3.2]
+        hadoop: [3]
         include:
         - spark: 3.4.1
           hadoop: 3
