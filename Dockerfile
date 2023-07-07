@@ -18,6 +18,8 @@ RUN set -eux \
         curl \
         procps \
         less \
+        # spark k8s executor
+        tini libc6 libpam-modules krb5-user libnss3 \
   && apt-get purge -y --auto-remove; rm -rf /var/lib/apt/lists/*
 
 # Addition
@@ -47,9 +49,9 @@ RUN set -eux \
 ARG SPARK_VERSION
 ARG HADOOP_VERSION
 ENV SPARK_VERSION=${SPARK_VERSION}
-ENV SPARK_HOME="/opt/spark-${SPARK_VERSION}"
+ENV SPARK_HOME="/opt/spark"
 ENV SPARK_CONF_DIR="/etc/spark"
-ENV SPARK_EXTJARS="${SPARK_HOME}/extjars"
+ENV SPARK_EXTRA_CLASSPATH="${SPARK_HOME}/extjars"
 ENV PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
 WORKDIR ${SPARK_HOME}
 
@@ -106,19 +108,25 @@ RUN set -eux \
   # non-root
   && chown -R spark ${SPARK_EXTJARS}
 
-## entrypoint.sh
-RUN printf '%s\n' > /entrypoint.sh \
+## entrypoint
+RUN set -eux \
+  # STS
+  && printf '%s\n' > /entrypoint-sts.sh \
     '#!/bin/bash' \
-    'java -cp "${SPARK_CONF_DIR}:${SPARK_HOME}/jars/*:${SPARK_HOME}/extjars/*" \' \
+    'java -cp "${SPARK_CONF_DIR}:${SPARK_HOME}/jars/*:${SPARK_EXTRA_CLASSPATH}/*" \' \
     'org.apache.spark.deploy.SparkSubmit \' \
     '--class org.apache.spark.sql.hive.thriftserver.HiveThriftServer2 \' \
     '--name "Spark Thrift Server (Docker)" \' \
     '"$@" \' \
     'spark-internal' \
-    && chmod +x /entrypoint.sh
+  && chmod +x /entrypoint-sts.sh \
+  # kubernetes executor
+  && cp ${SPARK_HOME}/kubernetes/dockerfiles/spark/entrypoint.sh /entrypoint-executor-k8s.sh && chmod +x /entrypoint-executor-k8s.sh \
+  && cp ${SPARK_HOME}/kubernetes/dockerfiles/spark/decom.sh /decom.sh && chmod +x /decom.sh
 
 # non-root
 USER spark
 
-ENTRYPOINT ["/entrypoint.sh"]
+# Default is executor entrypoint because STS's entrypoint can be changed in kubernetes yml file easily
+ENTRYPOINT ["/entrypoint-executor-k8s.sh"]
 CMD ["--help"]
