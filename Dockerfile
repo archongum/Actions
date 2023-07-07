@@ -51,7 +51,8 @@ ARG HADOOP_VERSION
 ENV SPARK_VERSION=${SPARK_VERSION}
 ENV SPARK_HOME="/opt/spark"
 ENV SPARK_CONF_DIR="/etc/spark"
-ENV SPARK_EXTRA_CLASSPATH="${SPARK_HOME}/extjars"
+ENV SPARK_EXTRA_JARS="${SPARK_HOME}/extjars"
+ENV SPARK_EXTRA_CLASSPATH="${SPARK_EXTRA_JARS}/*"
 ENV PATH="${SPARK_HOME}/bin:${SPARK_HOME}/sbin:$PATH"
 WORKDIR ${SPARK_HOME}
 
@@ -103,17 +104,17 @@ RUN set -eux \
   ) \
   && for file_url in "${spark_extjars_url[@]}"; do \
       echo "Download file [$file_url]" ; \
-      curl -kfSL --create-dirs --output-dir ${SPARK_EXTRA_CLASSPATH} -O "$file_url" ; \
+      curl -kfSL --create-dirs --output-dir ${SPARK_EXTRA_JARS} -O "$file_url" ; \
   done \
   # non-root
-  && chown -R spark ${SPARK_EXTRA_CLASSPATH}
+  && chown -R spark ${SPARK_EXTRA_JARS}
 
 ## entrypoint
 RUN set -eux \
   # STS
   && printf '%s\n' > /entrypoint-sts.sh \
     '#!/bin/bash' \
-    'java -cp "${SPARK_CONF_DIR}:${SPARK_HOME}/jars/*:${SPARK_EXTRA_CLASSPATH}/*" \' \
+    'java -cp "${SPARK_CONF_DIR}:${SPARK_HOME}/jars/*:${SPARK_EXTRA_CLASSPATH}" \' \
     'org.apache.spark.deploy.SparkSubmit \' \
     '--class org.apache.spark.sql.hive.thriftserver.HiveThriftServer2 \' \
     '--name "Spark Thrift Server (Docker)" \' \
