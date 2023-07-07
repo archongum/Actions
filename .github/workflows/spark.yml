@@ -6,7 +6,8 @@ jobs:
   build:
     strategy:
       matrix:
-        spark: [3.2.4, 3.3.0, 3.3.2]
+        # var hadoop remains as array in case of hadoop 2
+        spark: [3.2.4, 3.3.2]
         hadoop: [3]
         include:
         - spark: 3.4.1
@@ -30,7 +31,7 @@ jobs:
           password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
       - name: Push to Registry
         env:
-          IMAGE_NAME: archongum/spark-thriftserver:${{ matrix.spark }}-hadoop${{ matrix.hadoop }}
+          IMAGE_NAME: archongum/spark:${{ matrix.spark }}-hadoop${{ matrix.hadoop }}
         run: |
           # show size
           du -sh ./*
