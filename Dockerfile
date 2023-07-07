@@ -103,10 +103,10 @@ RUN set -eux \
   ) \
   && for file_url in "${spark_extjars_url[@]}"; do \
       echo "Download file [$file_url]" ; \
-      curl -kfSL --create-dirs --output-dir ${SPARK_EXTJARS} -O "$file_url" ; \
+      curl -kfSL --create-dirs --output-dir ${SPARK_EXTRA_CLASSPATH} -O "$file_url" ; \
   done \
   # non-root
-  && chown -R spark ${SPARK_EXTJARS}
+  && chown -R spark ${SPARK_EXTRA_CLASSPATH}
 
 ## entrypoint
 RUN set -eux \
