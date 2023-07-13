@@ -101,6 +101,8 @@ RUN set -eux \
       https://repo1.maven.org/maven2/org/elasticsearch/elasticsearch-spark-20_2.12/7.17.9/elasticsearch-spark-20_2.12-7.17.9.jar \
       # MongoDB Datasource, Spark Connector 3.x for Data Source not 10.x that for Structured Streaming, ref: https://www.mongodb.com/blog/post/new-mongodb-spark-connector
       https://repo1.maven.org/maven2/org/mongodb/spark/mongo-spark-connector_2.12/3.0.2/mongo-spark-connector_2.12-3.0.2-assembly.jar \
+      # Custom Auth: https://github.com/archongum/hiveserver-custom-auth
+      https://github.com/archongum/hiveserver-custom-auth/releases/download/1.2/hiveserver-custom-auth-1.2-jar-with-dependencies.jar \
   ) \
   && for file_url in "${spark_extjars_url[@]}"; do \
       echo "Download file [$file_url]" ; \
