@@ -21,6 +21,7 @@ RUN set -eux \
   && unzip /tmp/livy.zip -d /tmp/ \
   && mv /tmp/apache-livy-0.7.1-incubating-bin/conf ${LIVY_CONF_DIR} \
   && mv /tmp/apache-livy-0.7.1-incubating-bin ${LIVY_HOME} \
+  && mkdir ${LIVY_HOME}/logs \
   # conf
   && ln -s ${LIVY_CONF_DIR} ${LIVY_HOME}/conf \
   # non-root
