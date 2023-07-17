@@ -6,7 +6,6 @@ FROM archongum/spark:3.3.2-hadoop3
 ENV LIVY_VERSION=0.7.1
 ENV LIVY_HOME="/opt/livy"
 ENV LIVY_CONF_DIR="/etc/livy"
-WORKDIR ${LIVY_HOME}
 
 
 ## install
@@ -28,6 +27,8 @@ RUN set -eux \
   && chown -R spark ${LIVY_HOME} \
   # cleanup
   && rm -rf /tmp/* /var/tmp/*
+
+WORKDIR ${LIVY_HOME}
 
 # non-root
 USER spark
