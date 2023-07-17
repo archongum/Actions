@@ -8,11 +8,9 @@ ENV LIVY_HOME="/opt/livy"
 ENV LIVY_CONF_DIR="/etc/livy"
 WORKDIR ${LIVY_HOME}
 
-# base tools
-RUN set -eux \
-  && apt-get purge -y --auto-remove; rm -rf /var/lib/apt/lists/*
 
 ## install
+USER root
 RUN set -eux \
   && apt-get update \
   && apt-get install -y --no-install-recommends \
