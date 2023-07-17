@@ -10,8 +10,7 @@ WORKDIR ${LIVY_HOME}
 
 ## install
 RUN set -eux \
-  # specific user
-  && useradd spark \
+  # download
   && curl -kfSL https://archive.apache.org/dist/incubator/livy/0.7.1-incubating/apache-livy-0.7.1-incubating-bin.zip -o /tmp/livy.zip \
   # untar
   && unzip /tmp/livy.zip -d /tmp/ \
