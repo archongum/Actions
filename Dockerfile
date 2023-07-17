@@ -8,8 +8,16 @@ ENV LIVY_HOME="/opt/livy"
 ENV LIVY_CONF_DIR="/etc/livy"
 WORKDIR ${LIVY_HOME}
 
+# base tools
+RUN set -eux \
+  && apt-get purge -y --auto-remove; rm -rf /var/lib/apt/lists/*
+
 ## install
 RUN set -eux \
+  && apt-get update \
+  && apt-get install -y --no-install-recommends \
+    unzip \
+  && apt-get purge -y --auto-remove; rm -rf /var/lib/apt/lists/* \
   # download
   && curl -kfSL https://archive.apache.org/dist/incubator/livy/0.7.1-incubating/apache-livy-0.7.1-incubating-bin.zip -o /tmp/livy.zip \
   # untar
