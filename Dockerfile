@@ -23,7 +23,7 @@ RUN set -eux \
   && mv /tmp/apache-livy-0.7.1-incubating-bin ${LIVY_HOME} \
   # conf
   && mv ${LIVY_HOME}/conf ${LIVY_CONF_DIR} \
-  && ln -s ${LIVY_CONF_DIR} ${LIVY_CONF_DIR}/conf \
+  && ln -s ${LIVY_CONF_DIR} ${LIVY_HOME}/conf \
   # non-root
   && chown -R spark ${LIVY_HOME} \
   # cleanup
