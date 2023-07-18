@@ -67,11 +67,11 @@ RUN set -eux \
   # untar
   && mkdir -p ${SPARK_HOME} \
   && tar -xzf /tmp/spark.tgz --strip-components=1 -C ${SPARK_HOME} \
+  # non-root
+  && chown -R spark ${SPARK_HOME} \
   # conf
   && mv ${SPARK_HOME}/conf ${SPARK_CONF_DIR} \
   && ln -s ${SPARK_CONF_DIR} ${SPARK_HOME}/conf \
-  # non-root
-  && chown -R spark ${SPARK_HOME} \
   # cleanup
   && rm -rf /tmp/* /var/tmp/*
 
