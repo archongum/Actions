@@ -21,11 +21,11 @@ RUN set -eux \
   && unzip /tmp/livy.zip -d /tmp/ \
   && mv /tmp/apache-livy-0.7.1-incubating-bin ${LIVY_HOME} \
   && mkdir ${LIVY_HOME}/logs \
+  # non-root
+  && chown -R spark ${LIVY_HOME} \
   # conf
   && mv ${LIVY_HOME}/conf ${LIVY_CONF_DIR} \
   && ln -s ${LIVY_CONF_DIR} ${LIVY_HOME}/conf \
-  # non-root
-  && chown -R spark ${LIVY_HOME} \
   # cleanup
   && rm -rf /tmp/* /var/tmp/*
 
