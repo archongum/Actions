@@ -1,15 +1,18 @@
+ARG LIVY_VERSION
+FROM archongum/livy-bin:${LIVY_VERSION}-scala2.12-spark3-hadoop3 as builder
+
 FROM archongum/spark:3.3.2-hadoop3
 
 # -------------------------- Custom --------------------------
 # Livy
 ## env
-ARG LIVY_VERSION
+ENV LIVY_VERSION=${LIVY_VERSION}
 ENV LIVY_HOME="/opt/livy"
 ENV LIVY_CONF_DIR="/etc/livy"
 
 ## install
 USER root
-COPY --from=archongum/livy-bin:${LIVY_VERSION}-scala2.12-spark3-hadoop3 /tmp/livy ${LIVY_HOME}
+COPY --from=builder /tmp/livy ${LIVY_HOME}
 RUN set -eux \
   && mkdir ${LIVY_HOME}/logs \
   # non-root
