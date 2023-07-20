@@ -11,8 +11,8 @@ ENV LIVY_HOME="/opt/livy"
 ENV LIVY_CONF_DIR="/etc/livy"
 
 ## install
-USER root
 COPY --from=builder /tmp/livy ${LIVY_HOME}
+USER root
 RUN set -eux \
   && mkdir ${LIVY_HOME}/logs \
   # non-root
