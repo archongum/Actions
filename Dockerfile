@@ -3,23 +3,14 @@ FROM archongum/spark:3.3.2-hadoop3
 # -------------------------- Custom --------------------------
 # Livy
 ## env
-ENV LIVY_VERSION=0.7.1
+ARG LIVY_VERSION
 ENV LIVY_HOME="/opt/livy"
 ENV LIVY_CONF_DIR="/etc/livy"
 
-
 ## install
 USER root
+COPY --from=archongum/livy-bin:${LIVY_VERSION}-scala2.12-spark3-hadoop3 /tmp/livy ${LIVY_HOME}
 RUN set -eux \
-  && apt-get update \
-  && apt-get install -y --no-install-recommends \
-    unzip \
-  && apt-get purge -y --auto-remove; rm -rf /var/lib/apt/lists/* \
-  # download
-  && curl -kfSL https://archive.apache.org/dist/incubator/livy/0.7.1-incubating/apache-livy-0.7.1-incubating-bin.zip -o /tmp/livy.zip \
-  # untar
-  && unzip /tmp/livy.zip -d /tmp/ \
-  && mv /tmp/apache-livy-0.7.1-incubating-bin ${LIVY_HOME} \
   && mkdir ${LIVY_HOME}/logs \
   # non-root
   && chown -R spark ${LIVY_HOME} \
@@ -35,5 +26,5 @@ WORKDIR ${LIVY_HOME}
 USER spark
 
 # Default is executor entrypoint because STS's entrypoint can be changed in kubernetes yml file easily
-ENTRYPOINT ["bin/livy-server"]
+ENTRYPOINT ["${LIVY_HOME}/bin/livy-server"]
 CMD ["--help"]

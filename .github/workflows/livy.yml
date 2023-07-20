@@ -23,12 +23,13 @@ jobs:
           password: ${{ secrets.ALIYUN_REGISTRY_PASSWORD }}
       - name: Push to Registry
         env:
-          IMAGE_NAME: archongum/livy:0.7.1-spark-3.3.2
+          LIVY_VERSION: 0.8.0-snapshot
+          IMAGE_NAME: archongum/livy:0.8.0-snapshot-spark-3.3.2
         run: |
           # show size
           du -sh ./*
           # build
-          docker build . -f Dockerfile --tag $IMAGE_NAME
+          docker build . -f Dockerfile --tag $IMAGE_NAME --build-arg LIVY_VERSION=$LIVY_VERSION
           docker tag $IMAGE_NAME ${{ secrets.ALIYUN_REGISTRY_URL }}/$IMAGE_NAME
           # show images
           docker images | head -n 10
