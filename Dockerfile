@@ -29,5 +29,4 @@ WORKDIR ${LIVY_HOME}
 USER spark
 
 # Default is executor entrypoint because STS's entrypoint can be changed in kubernetes yml file easily
-ENTRYPOINT ["${LIVY_HOME}/bin/livy-server"]
-CMD ["--help"]
+ENTRYPOINT ["bin/livy-server"]
