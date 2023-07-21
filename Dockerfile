@@ -36,4 +36,3 @@ USER spark
 
 # Default is executor entrypoint because STS's entrypoint can be changed in kubernetes yml file easily
 ENTRYPOINT ["bin/livy-server"]
-CMD ["--help"]
