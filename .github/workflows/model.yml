@@ -28,7 +28,7 @@ jobs:
           # show size
           du -sh ./*
           # build
-          docker build . -f Dockerfile --tag $IMAGE_NAME
+          docker build . -f Dockerfile --tag $IMAGE_NAME --build-arg HF_TOKEN=${{ secrets.HF_TOKEN }}
           docker tag $IMAGE_NAME ${{ secrets.ALIYUN_REGISTRY_URL }}/$IMAGE_NAME
           # show images
           docker images | head -n 10

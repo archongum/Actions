@@ -2,6 +2,10 @@ FROM python:3.12-slim
 
 WORKDIR /model
 
+# from --build-arg
+ARG HF_TOKEN
+
+# Env definition
 ENV PROJECT_NAME=meta-llama \
     REPOSITORY_NAME=Llama-2-7b-hf
 
